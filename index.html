@@ -1,2 +1,42 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEXUS CAPITAL</title>
 <link rel="icon" href="Nexus.jpg">
 <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A3D8F">
+<style>
+body{margin:0;background:#0A1931;font-family:Arial,sans-serif;color:white;text-align:center;padding:20px}
+.logo{width:90px;height:90px;border-radius:22px;margin:20px auto;display:block}
+.card{background:white;color:#0A1931;border-radius:20px;padding:25px;max-width:380px;margin:20px auto}
+input{width:100%;padding:14px;margin:8px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
+button{width:100%;padding:15px;background:#FFC107;border:none;border-radius:10px;font-weight:bold;font-size:16px;margin-top:10px}
+h1{margin:10px 0}
+</style>
+</head>
+<body>
+<img src="Nexus.jpg" class="logo" alt="NC">
+<h1>NEXUS CAPITAL</h1>
+<p>Rwandan Investment - 15% Monthly - Nyagatare</p>
+<div class="card">
+<h2>Invest Now</h2>
+<p>10k → 11.5k | 50k → 57.5k | 100k → 115k</p>
+<input type="tel" placeholder="Phone 078xxx" id="phone">
+<input type="text" placeholder="Amazina" id="name">
+<button onclick="invest()">INVEST NOW - MTN MoMo</button>
+<p style="font-size:12px;margin-top:15px">theobazum@gmail.com - 0783764743</p>
+</div>
+<script>
+function invest(){
+let p=document.getElementById('phone').value;
+let n=document.getElementById('name').value;
+if(!p||!n){alert('Uzuza Phone n Amazina!');return}
+let msg=`NEXUS INVEST: ${n} - ${p} - Nyagatare`;
+window.open(`https://wa.me/250783764743?text=${encodeURIComponent(msg)}`);
+}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
+</script>
+</body>
+  </html>
