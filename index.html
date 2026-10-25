@@ -3,39 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nexus Capital - Rwandan Investment</title>
+<title>NEXUS CAPITAL</title>
 <style>
-body{margin:0;background:#0a0a0f;color:#fff;font-family:Arial,sans-serif}
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
-h1{font-size:3rem;background:linear-gradient(90deg,#a855f7,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.card{background:#15151f;border:1px solid #2a2a3a;border-radius:20px;padding:30px;margin:20px;max-width:400px}
-.price{font-size:2.5rem;color:#a855f7;font-weight:bold}
-.btn{background:linear-gradient(90deg,#a855f7,#06b6d4);color:#fff;padding:15px 30px;border:none;border-radius:30px;font-size:1.1rem;cursor:pointer;margin-top:20px;display:inline-block;text-decoration:none}
-.badge{background:#1f1f2f;padding:10px 20px;border-radius:20px;margin:5px;display:inline-block}
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:#080f25;color:#fff;padding-bottom:70px}
+.header{display:flex;justify-content:space-between;padding:14px;background:#0c1630;border-bottom:1px solid #1e3566}
+.logo{font-weight:800} .logo span{color:#4f80ff}
+.live{font-size:11px;background:#101e3f;border:1px solid #1e3566;padding:4px 10px;border-radius:20px;color:#7aa0ff}
+.container{padding:12px;max-width:480px;margin:0 auto}
+.welcome-card{background:linear-gradient(135deg,#111e3e,#0e1a36);border:1px solid #1e345f;border-radius:20px;padding:18px;margin-bottom:14px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat-box{background:#0d1a35;border:1px solid #1e345f;border-radius:14px;padding:12px;text-align:center}
+.stat-val{font-size:18px;font-weight:800;color:#4f80ff}
+.stat-val.green{color:#00e676}.stat-val.yellow{color:#ffca28}
+.stat-label{font-size:12px;color:#9aa8c8}
+.btn-primary{width:100%;background:#3a6bff;border:none;padding:13px;border-radius:12px;color:#fff;font-weight:700}
+.card{background:#111e3e;border:1px solid #1e345f;border-radius:18px;padding:16px;margin-bottom:14px}
+.input-box{width:100%;background:#0a132a;border:1px solid #1e345f;border-radius:10px;padding:12px;color:#fff}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0c1630;border-top:1px solid #1e345f;display:flex;justify-content:space-around;padding:8px 0}
+.nav-item{font-size:10px;color:#6b7a9a;text-align:center}
 </style>
 </head>
 <body>
-<div class="hero">
-<h1>NEXUS CAPITAL</h1>
-<p style="color:#aaa;letter-spacing:4px">RWANDAN INVESTMENT PLAN</p>
-<div style="margin:20px">
-<span class="badge">⚡ 2,847 Active Nodes</span>
-<span class="badge">🌐 89 Jurisdictions</span>
-<span class="badge">✓ 847.3% Return</span>
+<div class="header"><div class="logo">NEXUS <span>CAPITAL</span></div><div class="live">● LIVE Theoneste - 5,000 Rwf</div></div>
+<div class="container">
+<div class="welcome-card">
+<div style="font-size:20px;font-weight:700">Murakaza neza, Theoneste! 👋</div>
+<div style="font-size:12px;color:#7a8ab0;margin-bottom:14px">CEO - 0787677962</div>
+<div class="stats-grid">
+<div class="stat-box"><div class="stat-val">5,000 Rwf</div><div class="stat-label">Balance</div></div>
+<div class="stat-box"><div class="stat-val green">750 Rwf</div><div class="stat-label">Inyungu 30d</div></div>
+<div class="stat-box"><div class="stat-val">25 Rwf</div><div class="stat-label">Buri Munsi</div></div>
+<div class="stat-box"><div class="stat-val yellow">1</div><div class="stat-label">Invest</div></div>
+</div>
+<button class="btn-primary">💰 Shora Ubu</button>
 </div>
 <div class="card">
-<h3>PREMIUM PLAN</h3>
-<div class="price">1,250,000 RWF</div>
-<p style="color:#888">/ Annual</p>
-<ul style="text-align:left;color:#ccc">
-<li>✓ Quantum AI Allocation</li>
-<li>✓ Zero-Knowledge Custody</li>
-<li>✓ 0.003ms Execution</li>
-<li>✓ 24/7 Support</li>
-</ul>
-<a class="btn" href="https://wa.me/250788000000">Tangira Ubu - Start Now</a>
+<div style="font-weight:700;margin-bottom:10px">📈 Calculator</div>
+<input id="calcInput" class="input-box" value="100000" oninput="calc()">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+<div class="stat-box"><div id="calcDaily" style="color:#4f80ff;font-weight:800">500 Rwf</div><div class="stat-label">Buri munsi</div></div>
+<div class="stat-box"><div id="calcMonthly" style="color:#00e676;font-weight:800">15,000 Rwf</div><div class="stat-label">Ku kwezi 15%</div></div>
 </div>
-<p style="color:#666;margin-top:30px">© 2026 Nexus Capital Rwanda - Secure • Fast • Trusted</p>
 </div>
+<div class="card"><div style="display:flex;justify-content:space-between"><span style="font-size:13px">Invest 5,000 Rwf Starter</span><span style="color:#00e676">Active ✅</span></div></div>
+</div>
+<div class="bottom-nav"><div class="nav-item">🏠<br>Home</div><div class="nav-item">💰<br>Invest</div><div class="nav-item">👛<br>Wallet</div><div class="nav-item">👥<br>Referral</div><div class="nav-item">👤<br>Profile</div></div>
+<script>
+function calc(){let v=parseInt(document.getElementById('calcInput').value)||0;document.getElementById('calcDaily').innerText=Math.floor(v*0.005).toLocaleString()+' Rwf';document.getElementById('calcMonthly').innerText=Math.floor(v*0.15).toLocaleString()+' Rwf';}calc();
+</script>
 </body>
-</html>
+  </html>
