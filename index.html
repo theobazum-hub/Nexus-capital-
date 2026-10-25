@@ -51,9 +51,65 @@ body{background:#080f25;color:#fff;padding-bottom:70px}
 <div class="card"><div style="display:flex;justify-content:space-between"><span style="font-size:13px">Invest 5,000 Rwf Starter</span><span style="color:#00e676">Active ✅</span></div></div>
 </div>
 <div class="bottom-nav"><div class="nav-item">🏠<br>Home</div><div class="nav-item">💰<br>Invest</div><div class="nav-item">👛<br>Wallet</div><div class="nav-item">👥<br>Referral</div><div class="nav-item">👤<br>Profile</div></div>
-54 <script>
-55 function calc()....
-56 </script>
+<!-- AI S&P 500 ANALYZER - YAKOZWE NA NEXUS -->
+<div id="ai-analyzer" style="background:#111827; border:1px solid #fbbf24; border-radius:12px; padding:16px; margin:20px 0; color:white; font-family: sans-serif;">
+  <h3 style="color:#fbbf24; margin:0 0 10px 0;">🤖 AI Isoko Analyzer</h3>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+    <input id="spOpen" type="number" placeholder="Open (ex: 7637)" style="padding:8px; border-radius:6px; background:#1f2937; color:white; border:1px solid #374151;">
+    <input id="spClose" type="number" placeholder="Current Price (7623)" style="padding:8px; border-radius:6px; background:#1f2937; color:white; border:1px solid #374151;">
+    <input id="spHigh" type="number" placeholder="High (7660)" style="padding:8px; border-radius:6px; background:#1f2937; color:white; border:1px solid #374151;">
+    <input id="spLow" type="number" placeholder="Low (7612)" style="padding:8px; border-radius:6px; background:#1f2937; color:white; border:1px solid #374151;">
+  </div>
+  <button onclick="analyzeMarket()" style="width:100%; background:#fbbf24; color:black; font-weight:bold; padding:10px; border-radius:8px; border:none; cursor:pointer;">BISESENGURE</button>
+  <div id="aiResult" style="margin-top:12px; background:#1f2937; padding:12px; border-radius:8px; display:none; line-height:1.6;"></div>
+</div>
+
+<script>
+function analyzeMarket(){
+  const open = parseFloat(document.getElementById('spOpen').value);
+  const close = parseFloat(document.getElementById('spClose').value);
+  const high = parseFloat(document.getElementById('spHigh').value);
+  const low = parseFloat(document.getElementById('spLow').value);
+  const res = document.getElementById('aiResult');
+  
+  if(!open || !close || !high || !low){ alert("Injiza Open, High, Low, na Current Price"); return; }
+
+  const change = ((close - open)/open*100).toFixed(2);
+  const range = high - low;
+  const position = ((close - low)/range*100).toFixed(0);
+
+  let analysis = "";
+  let advice = "";
+
+  // Isesengura ry'umunsi
+  if(change > 0){
+    analysis = `Uyu munsi S&P yazamutseho <b style='color:#22c55e;'>+${change}%</b>. `;
+  } else {
+    analysis = `Uyu munsi S&P yaguyeho <b style='color:#ef4444;'>${change}%</b>. `;
+  }
+
+  if(position > 70){
+    analysis += `Iri hejuru hafi ya High (${position}% hejuru ya Low). Abaguze ejo bari kunguka.`;
+    advice = "⚠️ NTUKIHUTIRE kugura uyu munsi - Teganiriza ejo. Isoko rishobora kuruhuka.";
+  } else if(position < 30){
+    analysis += `Iri hasi hafi ya Low (${position}% hejuru ya Low). Abantu benshi bagurishije kubera ubwoba.`;
+    advice = "✅ Amahirwe: Iyo isoko riri hasi gutya, abashora buri kwezi (DCA) bakunda kugura gahoro gahoro. Si igihe cyo kugurisha mu bwoba.";
+  } else {
+    analysis += `Iri hagati ( ${position}% ). Isoko riratekereza, nta bwoba bwinshi, nta byishimo bwinshi.`;
+    advice = "➡️ Igihe cyiza cyo kwiga, ntukore ubwoba. Niba ukora DCA, komerezaho uko bisanzwe.";
+  }
+
+  res.style.display = "block";
+  res.innerHTML = `
+    <b style="color:#fbbf24;">Isesengura:</b><br>${analysis}<br><br>
+    <b style="color:#fbbf24;">Inama ya AI (si ubuhanuzi):</b><br>${advice}<br><br>
+    <small style="color:#9ca3af;">⚠️ Ibi si inama yo gushora ako kanya. Ni ubusobanuro gusa. Isoko ntirizi ejo hazaza. Shora amafaranga wakwihanganira kubura.</small>
+  `;
+}
+</script>
+<script>
+function calc()....
+</script>
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}</script>
-58 </body>
-59 </html>
+</body>
+</html>
