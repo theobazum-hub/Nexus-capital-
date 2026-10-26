@@ -1,115 +1,312 @@
 <!DOCTYPE html>
 <html lang="rw">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NEXUS CAPITAL</title>
-<link rel="icon" type="image/png" href="icon.png">
-<link rel="manifest" href="./manifest.json">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#080f25;color:#fff;padding-bottom:70px}
-.header{display:flex;justify-content:space-between;padding:14px;background:#0c1630;border-bottom:1px solid #1e3566}
-.logo{font-weight:800} .logo span{color:#4f80ff}
-.live{font-size:11px;background:#101e3f;border:1px solid #1e3566;padding:4px 10px;border-radius:20px;color:#7aa0ff}
-.container{padding:12px;max-width:480px;margin:0 auto}
-.welcome-card{background:linear-gradient(135deg,#111e3e,#0e1a36);border:1px solid #1e345f;border-radius:20px;padding:18px;margin-bottom:14px}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.stat-box{background:#0d1a35;border:1px solid #1e345f;border-radius:14px;padding:12px;text-align:center}
-.stat-val{font-size:18px;font-weight:800;color:#4f80ff}
-.stat-val.green{color:#00e676}.stat-val.yellow{color:#ffca28}
-.stat-label{font-size:12px;color:#9aa8c8}
-.btn-primary{width:100%;background:#3a6bff;border:none;padding:13px;border-radius:12px;color:#fff;font-weight:700}
-.card{background:#111e3e;border:1px solid #1e345f;border-radius:18px;padding:16px;margin-bottom:14px}
-.input-box{width:100%;background:#0a132a;border:1px solid #1e345f;border-radius:10px;padding:12px;color:#fff}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0c1630;border-top:1px solid #1e345f;display:flex;justify-content:space-around;padding:8px 0}
-.nav-item{font-size:10px;color:#6b7a9a;text-align:center}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080f25">
+  <meta name="description" content="NEXUS CAPITAL dashboard demo">
+  <title>NEXUS CAPITAL</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080f25;--panel:#111e3e;--panel2:#0c1630;--line:#1e345f;--blue:#4f80ff;--green:#00d084;--muted:#9aa8c8;--yellow:#ffca28}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{background:var(--bg);color:#fff;min-height:100vh;padding-bottom:86px}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px max(14px,env(safe-area-inset-left));background:var(--panel2);border-bottom:1px solid var(--line)}
+    .logo{font-weight:900;letter-spacing:.4px}.logo span{color:var(--blue)}
+    .header-right{display:flex;align-items:center;gap:8px}.live{font-size:11px;background:#101e3f;border:1px solid var(--line);padding:5px 9px;border-radius:20px;color:#9bb6ff}
+    .lang-btn{border:1px solid var(--line);background:#15264a;color:#fff;padding:7px 10px;border-radius:9px;font-weight:700}
+    .container{width:min(100%,520px);padding:14px;margin:0 auto}
+    .welcome-card{background:linear-gradient(135deg,#172951,#0e1a36);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
+    .welcome-card h1{font-size:21px;margin:8px 0}.subtle{color:var(--muted);font-size:13px;line-height:1.5}
+    .stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+    .stat-box,.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
+    .stat-val{font-size:clamp(17px,4.5vw,22px);font-weight:850;color:var(--blue);overflow-wrap:anywhere}.green{color:var(--green)}.yellow{color:var(--yellow)}
+    .stat-label{font-size:12px;color:var(--muted);margin-top:4px}
+    .card{margin-bottom:14px}.card h2{font-size:17px;margin-bottom:10px}.card p{line-height:1.55}
+    .btn-primary,.btn-secondary{width:100%;border:0;padding:13px;border-radius:11px;color:#fff;font-weight:750;min-height:46px}
+    .btn-primary{background:linear-gradient(135deg,#3a6bff,#2854d9)}.btn-secondary{background:#1a2b50;border:1px solid var(--line);margin-top:8px}
+    .input-box{display:block;width:100%;min-height:44px;background:#0a132a;border:1px solid var(--line);border-radius:10px;padding:11px;color:#fff;margin:6px 0 12px}
+    label{display:block;color:#c8d3ef;font-size:13px;margin-top:8px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .notice{font-size:12px;color:#c5d0e9;background:#0a142c;border:1px solid var(--line);border-radius:10px;padding:11px;line-height:1.5;margin-top:10px}
+    .result{display:none;margin-top:12px;padding:12px;border-radius:10px;background:#0a142c;border:1px solid var(--line);white-space:pre-line;line-height:1.6;overflow-wrap:anywhere}
+    .section{display:none}.section.active{display:block}
+    .bottom-nav{position:fixed;z-index:6;bottom:0;left:0;right:0;background:rgba(12,22,48,.97);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 4px calc(8px + env(safe-area-inset-bottom));backdrop-filter:blur(12px)}
+    .nav-item{background:none;border:0;color:#8b9bbb;text-align:center;font-size:10px;padding:5px 1px;min-width:0}
+    .nav-item .ico{display:block;font-size:19px;margin-bottom:3px}.nav-item.active{color:#fff}.nav-item.active .ico{filter:drop-shadow(0 0 5px #4f80ff)}
+    .pill{display:inline-block;background:#103b32;color:#7ef0c3;border:1px solid #176b55;border-radius:20px;font-size:11px;padding:4px 8px}
+    .rowline{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #20345a}.rowline:last-child{border-bottom:0}
+    .muted{color:var(--muted)}.small{font-size:12px}
+    @media(min-width:600px){body{padding-bottom:20px}.bottom-nav{position:static;max-width:520px;margin:0 auto 20px;border:1px solid var(--line);border-radius:14px}.header{padding-left:max(18px,calc((100% - 520px)/2));padding-right:max(18px,calc((100% - 520px)/2))}}
+  </style>
 </head>
 <body>
-<div class="header"><div class="logo">NEXUS <span>CAPITAL</span></div><div class="live">● LIVE Theoneste - 5,000 Rwf</div></div>
-<div class="container">
-<div class="welcome-card">
-<div style="font-size:20px;font-weight:700">Murakaza neza, Theoneste! 👋</div>
-<div style="font-size:12px;color:#7a8ab0;margin-bottom:14px">CEO - 0787677962</div>
-<div class="stats-grid">
-<div class="stat-box"><div class="stat-val">5,000 Rwf</div><div class="stat-label">Balance</div></div>
-<div class="stat-box"><div class="stat-val green">750 Rwf</div><div class="stat-label">Inyungu 30d</div></div>
-<div class="stat-box"><div class="stat-val">25 Rwf</div><div class="stat-label">Buri Munsi</div></div>
-<div class="stat-box"><div class="stat-val yellow">1</div><div class="stat-label">Invest</div></div>
-</div>
-<button class="btn-primary">💰 Shora Ubu</button>
-</div>
-<div class="card">
-<div style="font-weight:700;margin-bottom:10px">📈 Calculator - 0.5% / 15%</div>
-<input id="calcInput" class="input-box" value="100000" oninput="calc()">
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
-<div class="stat-box"><div id="calcDaily" style="color:#4f80ff;font-weight:800">500 Rwf</div><div class="stat-label">Buri munsi</div></div>
-<div class="stat-box"><div id="calcMonthly" style="color:#00e676;font-weight:800">15,000 Rwf</div><div class="stat-label">Ku kwezi 15%</div></div>
-</div>
-</div>
-<div class="card"><div style="display:flex;justify-content:space-between"><span style="font-size:13px">Invest 5,000 Rwf Starter</span><span style="color:#00e676">Active ✅</span></div></div>
-</div>
-<div class="bottom-nav"><div class="nav-item">🏠<br>Home</div><div class="nav-item">💰<br>Invest</div><div class="nav-item">👛<br>Wallet</div><div class="nav-item">👥<br>Referral</div><div class="nav-item">👤<br>Profile</div></div>
-<!-- AI S&P 500 ANALYZER - YAKOZWE NA NEXUS -->
-<div id="ai-analyzer" style="background:#111827; border:1px solid #fbbf24; border-radius:12px; padding:16px; margin:20px 0; color:white; font-family: sans-serif;">
-  <h3 style="color:#fbbf24; margin:0 0 10px 0;">🤖 AI Isoko Analyzer</h3>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
-    <input id="spOpen" type="number" placeholder="Open (ex: 7637)" style="padding:8px; border-radius:6px; background:#1f2937; color:white; border:1px solid #374151;">
-    <input id="spClose" type="number" placeholder="Current Price (7623)" style="padding:8px; border-radius:6px; background:#1f2937; color:white; border:1px solid #374151;">
-    <input id="spHigh" type="number" placeholder="High (7660)" style="padding:8px; border-radius:6px; background:#1f2937; color:white; border:1px solid #374151;">
-    <input id="spLow" type="number" placeholder="Low (7612)" style="padding:8px; border-radius:6px; background:#1f2937; color:white; border:1px solid #374151;">
-  </div>
-  <button onclick="analyzeMarket()" style="width:100%; background:#fbbf24; color:black; font-weight:bold; padding:10px; border-radius:8px; border:none; cursor:pointer;">BISESENGURE</button>
-  <div id="aiResult" style="margin-top:12px; background:#1f2937; padding:12px; border-radius:8px; display:none; line-height:1.6;"></div>
-</div>
+  <header class="header">
+    <div class="logo">NEXUS <span>CAPITAL</span></div>
+    <div class="header-right">
+      <span class="live">● <span data-i18n="demo">DEMO</span></span>
+      <button class="lang-btn" id="langToggle" type="button" aria-label="Change language">EN</button>
+    </div>
+  </header>
 
-<script>
-function analyzeMarket(){
-  const open = parseFloat(document.getElementById('spOpen').value);
-  const close = parseFloat(document.getElementById('spClose').value);
-  const high = parseFloat(document.getElementById('spHigh').value);
-  const low = parseFloat(document.getElementById('spLow').value);
-  const res = document.getElementById('aiResult');
-  
-  if(!open || !close || !high || !low){ alert("Injiza Open, High, Low, na Current Price"); return; }
+  <main class="container">
+    <section class="section active" id="home">
+      <div class="welcome-card">
+        <span class="pill" data-i18n="accountDemo">Konti y'igerageza</span>
+        <h1><span data-i18n="welcome">Murakaza neza</span>, <span id="displayName">Theoneste</span>! 👋</h1>
+        <p class="subtle" data-i18n="dashboardIntro">Iyi ni dashboard yo kugerageza. Imibare iri hano si amafaranga yemejwe muri konti.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val" id="balanceVal">5.000 Frw</div><div class="stat-label" data-i18n="balance">Amafaranga ari kuri konti</div></div>
+        <div class="stat-box"><div class="stat-val green" id="earningsVal">0 Frw</div><div class="stat-label" data-i18n="earnings">Inyungu yemejwe</div></div>
+        <div class="stat-box"><div class="stat-val yellow" id="dailyVal">—</div><div class="stat-label" data-i18n="daily">Inyungu ya buri munsi</div></div>
+        <div class="stat-box"><div class="stat-val" id="planVal">Starter</div><div class="stat-label" data-i18n="plan">Gahunda</div></div>
+      </div>
+      <div class="card">
+        <h2 data-i18n="quickActions">Ibikorwa by'ingenzi</h2>
+        <button class="btn-primary" type="button" data-go="invest" data-i18n="goInvest">💰 Reba gahunda zo gushora</button>
+        <button class="btn-secondary" type="button" data-go="wallet" data-i18n="goWallet">👛 Fungura Wallet</button>
+        <p class="notice" data-i18n="demoNotice">Uru ni urugero rw'imikorere y'imbere gusa. Nta mafaranga nyayo yoherezwa cyangwa abikuzwa hano.</p>
+      </div>
+    </section>
 
-  const change = ((close - open)/open*100).toFixed(2);
-  const range = high - low;
-  const position = ((close - low)/range*100).toFixed(0);
+    <section class="section" id="invest">
+      <div class="card">
+        <h2 data-i18n="investTitle">💰 Gahunda zo gushora</h2>
+        <p class="subtle" data-i18n="investIntro">Hitamo amafaranga yo kwifashisha mu mibare. Iyi demo ntakira amafaranga kandi ntitangiza ishoramari nyaryo.</p>
+        <label for="investAmount" data-i18n="amount">Amafaranga (Frw)</label>
+        <input class="input-box" id="investAmount" type="number" min="0" step="500" value="5000" inputmode="numeric">
+        <div class="rowline"><span data-i18n="selectedAmount">Amafaranga wahisemo</span><strong id="selectedAmount">5.000 Frw</strong></div>
+        <div class="rowline"><span data-i18n="dailyExample">Urugero rwa 0,5% ku munsi (ntirwizewe)</span><strong id="dailyExample">25 Frw</strong></div>
+        <button class="btn-primary" id="previewInvest" type="button" data-i18n="preview">Reba imibare y'urugero</button>
+        <div class="result" id="investResult" role="status"></div>
+        <p class="notice" data-i18n="riskNotice">Inyungu ntizizewe kandi zishobora no kuba igihombo. Ntugafate 0,5% ku munsi cyangwa 15% ku kwezi nk'isezerano ry'inyungu.</p>
+      </div>
+    </section>
 
-  let analysis = "";
-  let advice = "";
+    <section class="section" id="wallet">
+      <div class="card">
+        <h2 data-i18n="walletTitle">👛 Wallet</h2>
+        <div class="rowline"><span data-i18n="demoBalance">Amafaranga yo muri demo</span><strong>5.000 Frw</strong></div>
+        <p class="subtle" data-i18n="walletIntro">Kwinjiza no kubikuza amafaranga ntibihujwe na serivisi yo kwishyurana muri iyi verisiyo.</p>
+        <button class="btn-secondary" type="button" id="walletInfo" data-i18n="walletInfoBtn">Reba amakuru</button>
+        <div class="result" id="walletResult" role="status"></div>
+      </div>
+    </section>
 
-  // Isesengura ry'umunsi
-  if(change > 0){
-    analysis = `Uyu munsi S&P yazamutseho <b style='color:#22c55e;'>+${change}%</b>. `;
-  } else {
-    analysis = `Uyu munsi S&P yaguyeho <b style='color:#ef4444;'>${change}%</b>. `;
-  }
+    <section class="section" id="referral">
+      <div class="card">
+        <h2 data-i18n="refTitle">👥 Referral / Gutumira inshuti</h2>
+        <p class="subtle" data-i18n="refIntro">Nta link yihariye yo gutumira yashyizweho muri iyi demo.</p>
+        <label for="refCode" data-i18n="refCode">Kode yo gutumira (demo)</label>
+        <input class="input-box" id="refCode" value="NEXUS-DEMO" readonly>
+        <button class="btn-primary" type="button" id="copyRef" data-i18n="copyCode">Koporora kode</button>
+        <div class="result" id="refResult" role="status"></div>
+      </div>
+    </section>
 
-  if(position > 70){
-    analysis += `Iri hejuru hafi ya High (${position}% hejuru ya Low). Abaguze ejo bari kunguka.`;
-    advice = "⚠️ NTUKIHUTIRE kugura uyu munsi - Teganiriza ejo. Isoko rishobora kuruhuka.";
-  } else if(position < 30){
-    analysis += `Iri hasi hafi ya Low (${position}% hejuru ya Low). Abantu benshi bagurishije kubera ubwoba.`;
-    advice = "✅ Amahirwe: Iyo isoko riri hasi gutya, abashora buri kwezi (DCA) bakunda kugura gahoro gahoro. Si igihe cyo kugurisha mu bwoba.";
-  } else {
-    analysis += `Iri hagati ( ${position}% ). Isoko riratekereza, nta bwoba bwinshi, nta byishimo bwinshi.`;
-    advice = "➡️ Igihe cyiza cyo kwiga, ntukore ubwoba. Niba ukora DCA, komerezaho uko bisanzwe.";
-  }
+    <section class="section" id="profile">
+      <div class="card">
+        <h2 data-i18n="profileTitle">👤 Umwirondoro</h2>
+        <label for="nameInput" data-i18n="yourName">Izina ryawe</label>
+        <input class="input-box" id="nameInput" value="Theoneste" maxlength="50" autocomplete="name">
+        <label for="phoneInput" data-i18n="phone">Telefoni (ntibikwa kuri server)</label>
+        <input class="input-box" id="phoneInput" value="" type="tel" inputmode="tel" placeholder="07...">
+        <button class="btn-primary" type="button" id="saveProfile" data-i18n="saveProfile">Hindura izina kuri iyi page</button>
+        <div class="result" id="profileResult" role="status"></div>
+        <p class="notice" data-i18n="profileNotice">Ibisobanuro by'iyi page bibikwa muri browser gusa. Nta konti nyayo ihujwe.</p>
+      </div>
+    </section>
 
-  res.style.display = "block";
-  res.innerHTML = `
-    <b style="color:#fbbf24;">Isesengura:</b><br>${analysis}<br><br>
-    <b style="color:#fbbf24;">Inama ya AI (si ubuhanuzi):</b><br>${advice}<br><br>
-    <small style="color:#9ca3af;">⚠️ Ibi si inama yo gushora ako kanya. Ni ubusobanuro gusa. Isoko ntirizi ejo hazaza. Shora amafaranga wakwihanganira kubura.</small>
-  `;
-}
-</script>
-<script>
-function calc()....
-</script>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}</script>
+    <section class="card" id="calculatorCard">
+      <h2 data-i18n="calcTitle">📈 Calculator y'inyungu (urugero)</h2>
+      <p class="subtle" data-i18n="calcIntro">Gerageza imibare. Ibi ntibivuga ko inyungu izaboneka koko.</p>
+      <label for="calcPrincipal" data-i18n="principal">Amafaranga utangiriraho (Frw)</label>
+      <input class="input-box" id="calcPrincipal" type="number" min="0" step="500" value="5000" inputmode="numeric">
+      <div class="two-col">
+        <div><label for="calcRate" data-i18n="rate">Ijanisha ku munsi (%)</label><input class="input-box" id="calcRate" type="number" min="0" max="100" step="0.1" value="0.5" inputmode="decimal"></div>
+        <div><label for="calcDays" data-i18n="days">Iminsi</label><input class="input-box" id="calcDays" type="number" min="1" max="3650" step="1" value="30" inputmode="numeric"></div>
+      </div>
+      <button class="btn-primary" type="button" id="runCalc" data-i18n="calculate">Bara urugero</button>
+      <div class="result" id="calcResult" role="status"></div>
+    </section>
+
+    <section class="card" id="analyzerCard">
+      <h2 data-i18n="analyzerTitle">🤖 Isesengura ry'isoko</h2>
+      <p class="subtle" data-i18n="analyzerIntro">Injiza ibiciro byawe. Ibi si amakuru y'isoko ahita avugururwa, kandi si ubuhanuzi.</p>
+      <div class="two-col">
+        <div><label for="spOpen" data-i18n="openPrice">Open / Igiciro cyo gufungura</label><input class="input-box" id="spOpen" type="number" min="0" step="any" inputmode="decimal"></div>
+        <div><label for="spClose" data-i18n="currentPrice">Current / Igiciro kiriho</label><input class="input-box" id="spClose" type="number" min="0" step="any" inputmode="decimal"></div>
+        <div><label for="spHigh" data-i18n="highPrice">High / Igiciro cyo hejuru</label><input class="input-box" id="spHigh" type="number" min="0" step="any" inputmode="decimal"></div>
+        <div><label for="spLow" data-i18n="lowPrice">Low / Igiciro cyo hasi</label><input class="input-box" id="spLow" type="number" min="0" step="any" inputmode="decimal"></div>
+      </div>
+      <button class="btn-primary" type="button" id="analyzeBtn" data-i18n="analyze">BISESENGURE</button>
+      <div class="result" id="aiResult" role="status" aria-live="polite"></div>
+      <p class="notice" data-i18n="analyzerRisk">Iyi ni imibare yoroshye ishingiye ku byo winjije, si AI ihuza n'isoko mu kanya ako kanya kandi si inama y'imari.</p>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-item active" type="button" data-section="home"><span class="ico">🏠</span><span data-i18n="home">Ahabanza</span></button>
+    <button class="nav-item" type="button" data-section="invest"><span class="ico">💰</span><span data-i18n="invest">Gushora</span></button>
+    <button class="nav-item" type="button" data-section="wallet"><span class="ico">👛</span><span data-i18n="wallet">Wallet</span></button>
+    <button class="nav-item" type="button" data-section="referral"><span class="ico">👥</span><span data-i18n="referral">Inshuti</span></button>
+    <button class="nav-item" type="button" data-section="profile"><span class="ico">👤</span><span data-i18n="profile">Umwirondoro</span></button>
+  </nav>
+
+  <script>
+  (() => {
+    "use strict";
+    const translations = {
+      rw: {
+        demo:"IGERAGEZA",accountDemo:"Konti y'igerageza",welcome:"Murakaza neza",dashboardIntro:"Iyi ni dashboard yo kugerageza. Imibare iri hano si amafaranga yemejwe muri konti.",
+        balance:"Amafaranga ari kuri konti",earnings:"Inyungu yemejwe",daily:"Inyungu ya buri munsi",plan:"Gahunda",quickActions:"Ibikorwa by'ingenzi",goInvest:"💰 Reba gahunda zo gushora",goWallet:"👛 Fungura Wallet",demoNotice:"Uru ni urugero rw'imikorere y'imbere gusa. Nta mafaranga nyayo yoherezwa cyangwa abikuzwa hano.",
+        investTitle:"💰 Gahunda zo gushora",investIntro:"Hitamo amafaranga yo kwifashisha mu mibare. Iyi demo ntakira amafaranga kandi ntitangiza ishoramari nyaryo.",amount:"Amafaranga (Frw)",selectedAmount:"Amafaranga wahisemo",dailyExample:"Urugero rwa 0,5% ku munsi (ntirwizewe)",preview:"Reba imibare y'urugero",riskNotice:"Inyungu ntizizewe kandi zishobora no kuba igihombo. Ntugafate 0,5% ku munsi cyangwa 15% ku kwezi nk'isezerano ry'inyungu.",
+        walletTitle:"👛 Wallet",demoBalance:"Amafaranga yo muri demo",walletIntro:"Kwinjiza no kubikuza amafaranga ntibihujwe na serivisi yo kwishyurana muri iyi verisiyo.",walletInfoBtn:"Reba amakuru",walletMessage:"Iyi Wallet ni demo gusa. Nta kwishyura, kubitsa cyangwa kubikuza bikorwa.",
+        refTitle:"👥 Referral / Gutumira inshuti",refIntro:"Nta link yihariye yo gutumira yashyizweho muri iyi demo.",refCode:"Kode yo gutumira (demo)",copyCode:"Koporora kode",copySuccess:"Kode yakoporowe.",copyFail:"Ntibyashobotse gukoporora. Hitamo kode uyikopore.",
+        profileTitle:"👤 Umwirondoro",yourName:"Izina ryawe",phone:"Telefoni (ntibikwa kuri server)",saveProfile:"Hindura izina kuri iyi page",profileSaved:"Izina ryahinduwe kuri iyi page gusa.",profileNotice:"Ibisobanuro by'iyi page bibikwa muri browser gusa. Nta konti nyayo ihujwe.",
+        calcTitle:"📈 Calculator y'inyungu (urugero)",calcIntro:"Gerageza imibare. Ibi ntibivuga ko inyungu izaboneka koko.",principal:"Amafaranga utangiriraho (Frw)",rate:"Ijanisha ku munsi (%)",days:"Iminsi",calculate:"Bara urugero",calcInvalid:"Shyiramo amafaranga arenga cyangwa angana na zeru, ijanisha ritari munsi ya zeru, n'iminsi hagati ya 1 na 3650.",calcOutput:(p,g,t)=>`Amafaranga utangiriraho: ${p}\nInyungu y'urugero: ${g}\nIgiteranyo nyuma y'iminsi: ${t}\n\nIyi mibare ni urugero gusa; inyungu nyayo ntizewe.`,
+        analyzerTitle:"🤖 Isesengura ry'isoko",analyzerIntro:"Injiza ibiciro byawe. Ibi si amakuru y'isoko ahita avugururwa, kandi si ubuhanuzi.",openPrice:"Open / Igiciro cyo gufungura",currentPrice:"Current / Igiciro kiriho",highPrice:"High / Igiciro cyo hejuru",lowPrice:"Low / Igiciro cyo hasi",analyze:"BISESENGURE",analyzerRisk:"Iyi ni imibare yoroshye ishingiye ku byo winjije, si AI ihuza n'isoko mu kanya ako kanya kandi si inama y'imari.",
+        analyzeInvalid:"Injiza imibare yose. Open igomba kuba irenze zeru; Low ntigomba kurenga High; Current igomba kuba hagati ya Low na High; kandi High na Low ntibigomba kungana.",analysisTitle:"Isesengura",changeUp:"Igiciro cyazamutseho",changeDown:"Igiciro cyagabanutseho",unchanged:"Igiciro nticyahindutse ugereranyije na Open.",position:"Igiciro kiri kuri",ofRange:"y'intera iri hagati ya Low na High.",nearHigh:"Kiri hafi ya High. Ibi byonyine ntibihamya ko igiciro kigiye kugwa.",nearLow:"Kiri hafi ya Low. Ibi byonyine ntibihamya ko igiciro kigiye kuzamuka.",middle:"Kiri hagati ya High na Low. Reba n'andi makuru mbere yo gufata icyemezo.",disclaimer:"Iri sesengura rishingiye ku mibare winjije; si ubuhanuzi cyangwa inama y'imari.",
+        home:"Ahabanza",invest:"Gushora",wallet:"Wallet",referral:"Inshuti",profile:"Umwirondoro"
+      },
+      en: {
+        demo:"DEMO",accountDemo:"Demo account",welcome:"Welcome",dashboardIntro:"This is a demo dashboard. The figures shown are not verified account funds.",
+        balance:"Account balance",earnings:"Verified earnings",daily:"Daily earnings",plan:"Plan",quickActions:"Quick actions",goInvest:"💰 View investment examples",goWallet:"👛 Open Wallet",demoNotice:"This is a front-end demo only. No real money is transferred or withdrawn here.",
+        investTitle:"💰 Investment examples",investIntro:"Choose an amount to use in calculations. This demo does not accept money or start a real investment.",amount:"Amount (RWF)",selectedAmount:"Selected amount",dailyExample:"Example at 0.5% per day (not guaranteed)",preview:"Preview example",riskNotice:"Returns are not guaranteed and losses are possible. Do not treat 0.5% daily or 15% monthly as a promise.",
+        walletTitle:"👛 Wallet",demoBalance:"Demo funds",walletIntro:"Deposits and withdrawals are not connected to a payment service in this version.",walletInfoBtn:"View information",walletMessage:"This wallet is demo-only. No payments, deposits, or withdrawals take place.",
+        refTitle:"👥 Referral / Invite friends",refIntro:"No personal invitation link is configured in this demo.",refCode:"Referral code (demo)",copyCode:"Copy code",copySuccess:"Code copied.",copyFail:"Could not copy. Select and copy the code manually.",
+        profileTitle:"👤 Profile",yourName:"Your name",phone:"Phone (not stored on a server)",saveProfile:"Update name on this page",profileSaved:"Name updated on this page only.",profileNotice:"This page's details stay in your browser only. No real account is connected.",
+        calcTitle:"📈 Return calculator (example)",calcIntro:"Try the calculation. It does not mean the return will actually occur.",principal:"Starting amount (RWF)",rate:"Daily rate (%)",days:"Days",calculate:"Calculate example",calcInvalid:"Enter an amount greater than or equal to zero, a non-negative rate, and 1 to 3650 days.",calcOutput:(p,g,t)=>`Starting amount: ${p}\nExample return: ${g}\nTotal after the period: ${t}\n\nThis is illustrative only; actual returns are not guaranteed.`,
+        analyzerTitle:"🤖 Market analyzer",analyzerIntro:"Enter prices yourself. This is not live market data or a prediction.",openPrice:"Open price",currentPrice:"Current price",highPrice:"High price",lowPrice:"Low price",analyze:"ANALYZE",analyzerRisk:"This is a simple calculation based on your inputs, not a live AI market feed or financial advice.",
+        analyzeInvalid:"Enter all prices. Open must be above zero; Low cannot exceed High; Current must be between Low and High; High and Low cannot be equal.",analysisTitle:"Analysis",changeUp:"Price rose by",changeDown:"Price fell by",unchanged:"Price is unchanged compared with Open.",position:"Current price is at",ofRange:"of the Low-to-High range.",nearHigh:"It is near the High. This alone does not prove the price will fall.",nearLow:"It is near the Low. This alone does not prove the price will rise.",middle:"It is between High and Low. Consider other information before making a decision.",disclaimer:"This analysis is based on your inputs; it is not a prediction or financial advice.",
+        home:"Home",invest:"Invest",wallet:"Wallet",referral:"Referral",profile:"Profile"
+      }
+    };
+    let lang = "rw";
+    const t = key => translations[lang][key];
+    const money = value => `${new Intl.NumberFormat(lang === "rw" ? "rw-RW" : "en-RW", {maximumFractionDigits:2}).format(value)} Frw`;
+    function setTextLanguage() {
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.dataset.i18n;
+        if (translations[lang][key]) el.textContent = translations[lang][key];
+      });
+      document.getElementById("langToggle").textContent = lang === "rw" ? "EN" : "RW";
+      updateInvestPreview();
+    }
+    document.getElementById("langToggle").addEventListener("click", () => {
+      lang = lang === "rw" ? "en" : "rw";
+      setTextLanguage();
+    });
+    function showSection(id) {
+      document.querySelectorAll(".section").forEach(el => el.classList.toggle("active", el.id === id));
+      // Keep calculator and analyzer accessible on Home; other sections focus on their task.
+      document.getElementById("calculatorCard").style.display = id === "home" ? "block" : "none";
+      document.getElementById("analyzerCard").style.display = id === "home" ? "block" : "none";
+      document.querySelectorAll(".nav-item").forEach(el => el.classList.toggle("active", el.dataset.section === id));
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+    document.querySelectorAll("[data-section]").forEach(btn => btn.addEventListener("click", () => showSection(btn.dataset.section)));
+    document.querySelectorAll("[data-go]").forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.go;
+      showSection(id);
+    }));
+
+    function updateInvestPreview() {
+      const amount = Number(document.getElementById("investAmount").value);
+      document.getElementById("selectedAmount").textContent = money(Number.isFinite(amount) && amount >= 0 ? amount : 0);
+      document.getElementById("dailyExample").textContent = money(Number.isFinite(amount) && amount >= 0 ? amount * 0.005 : 0);
+    }
+    document.getElementById("investAmount").addEventListener("input", updateInvestPreview);
+    document.getElementById("previewInvest").addEventListener("click", () => {
+      const amount = Number(document.getElementById("investAmount").value);
+      const res = document.getElementById("investResult");
+      res.style.display = "block";
+      if (!Number.isFinite(amount) || amount < 0) {
+        res.textContent = t("calcInvalid");
+        return;
+      }
+      res.textContent = `${t("selectedAmount")}: ${money(amount)}\n${t("dailyExample")}: ${money(amount * 0.005)}\n\n${t("riskNotice")}`;
+    });
+
+    document.getElementById("walletInfo").addEventListener("click", () => {
+      const res = document.getElementById("walletResult");
+      res.style.display = "block";
+      res.textContent = t("walletMessage");
+    });
+    document.getElementById("copyRef").addEventListener("click", async () => {
+      const res = document.getElementById("refResult");
+      res.style.display = "block";
+      try {
+        await navigator.clipboard.writeText(document.getElementById("refCode").value);
+        res.textContent = t("copySuccess");
+      } catch (_) {
+        const field = document.getElementById("refCode");
+        field.focus(); field.select();
+        res.textContent = t("copyFail");
+      }
+    });
+    document.getElementById("saveProfile").addEventListener("click", () => {
+      const name = document.getElementById("nameInput").value.trim();
+      const res = document.getElementById("profileResult");
+      res.style.display = "block";
+      if (!name) {
+        res.textContent = lang === "rw" ? "Andika izina mbere yo gukomeza." : "Enter a name first.";
+        return;
+      }
+      document.getElementById("displayName").textContent = name;
+      res.textContent = t("profileSaved");
+    });
+
+    document.getElementById("runCalc").addEventListener("click", () => {
+      const principal = Number(document.getElementById("calcPrincipal").value);
+      const rate = Number(document.getElementById("calcRate").value);
+      const days = Number(document.getElementById("calcDays").value);
+      const res = document.getElementById("calcResult");
+      res.style.display = "block";
+      if (!Number.isFinite(principal) || principal < 0 || !Number.isFinite(rate) || rate < 0 || rate > 100 || !Number.isInteger(days) || days < 1 || days > 3650) {
+        res.textContent = t("calcInvalid");
+        return;
+      }
+      const gain = principal * (Math.pow(1 + rate / 100, days) - 1);
+      const total = principal + gain;
+      res.textContent = t("calcOutput")(money(principal), money(gain), money(total));
+    });
+
+    document.getElementById("analyzeBtn").addEventListener("click", analyzeMarket);
+    function analyzeMarket() {
+      const open = Number(document.getElementById("spOpen").value);
+      const close = Number(document.getElementById("spClose").value);
+      const high = Number(document.getElementById("spHigh").value);
+      const low = Number(document.getElementById("spLow").value);
+      const res = document.getElementById("aiResult");
+      res.style.display = "block";
+      if (![open, close, high, low].every(Number.isFinite) ||
+          [document.getElementById("spOpen"),document.getElementById("spClose"),document.getElementById("spHigh"),document.getElementById("spLow")].some(el => el.value.trim() === "") ||
+          open <= 0 || low < 0 || high <= low || close < low || close > high) {
+        res.textContent = t("analyzeInvalid");
+        return;
+      }
+      const change = ((close - open) / open) * 100;
+      const position = ((close - low) / (high - low)) * 100;
+      let lines = [t("analysisTitle") + ":"];
+      if (change > 0) lines.push(`${t("changeUp")} +${change.toFixed(2)}%.`);
+      else if (change < 0) lines.push(`${t("changeDown")} ${change.toFixed(2)}%.`);
+      else lines.push(t("unchanged"));
+      lines.push(`${t("position")} ${position.toFixed(0)}% ${t("ofRange")}`);
+      if (position > 70) lines.push(t("nearHigh"));
+      else if (position < 30) lines.push(t("nearLow"));
+      else lines.push(t("middle"));
+      lines.push("\n" + t("disclaimer"));
+      res.textContent = lines.join("\n\n");
+    }
+
+    setTextLanguage();
+    updateInvestPreview();
+    showSection("home");
+  })();
+  </script>
 </body>
 </html>
