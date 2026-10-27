@@ -309,4 +309,24 @@
   })();
   </script>
 </body>
+<!-- Supabase JavaScript library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SUPABASE_URL =
+    'https://idiznguqpcwgqoljjjpb.supabase.co';
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    'sb_publishable_EpOGjVLMwY8ipEQV59xhFA_EOp-zM_w';
+
+  const { createClient } = window.supabase;
+
+  window.nexusSupabase = createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  console.log('Nexus Capital: Supabase client initialized');
+</script>
+</body>
 </html>
