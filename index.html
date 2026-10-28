@@ -492,9 +492,56 @@
         </button>
       </div>
 
-      <form id="nca-signup-form" class="nca-form">
-        <label>
-          Amazina
+     <form id="nca-signup-form" class="nca-form">
+
+  <label>
+    Amazina
+    <input
+      id="nca-name"
+      type="text"
+      autocomplete="name"
+      maxlength="100"
+      required
+    >
+  </label>
+
+  <label>
+    Kode y'uwagutumiye (si ngombwa)
+    <input
+      id="nca-referral-code"
+      type="text"
+      autocomplete="off"
+      maxlength="30"
+      placeholder="Andika kode y'uwagutumiye"
+    >
+  </label>
+
+  <label>
+    Email
+    <input
+      id="nca-signup-email"
+      type="email"
+      autocomplete="email"
+      required    >
+  </label>
+
+  <label>
+    Ijambo ry'ibanga (nibura inyuguti 8)
+    <input
+      id="nca-signup-password"
+      type="password"
+      autocomplete="new-password"
+      minlength="8"
+      required
+    >
+  </label>
+
+  <button class="nca-submit" type="submit">
+    Kora konti
+  </button>
+</form>
+    >
+  </label>
           <input id="nca-name" type="text" autocomplete="name"
                  maxlength="100" required>
         </label>
@@ -628,23 +675,29 @@
     const name = byId('nca-name').value.trim();
     const email = byId('nca-signup-email').value.trim();
     const password = byId('nca-signup-password').value;
-
+const referralCode =
+  (byId('nca-referral-code')?.value || '')
+    .trim()
+    .toUpperCase();
     const submitButton = signupForm.querySelector('button[type="submit"]');
     submitButton.disabled = true;
     showMessage('Turimo gukora konti yawe...');
 
     try {
       const { data, error } = await sb.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo:
-            window.location.origin + window.location.pathname,
-          data: {
-            display_name: name
-          }
-        }
-      });
+  email,
+  password,
+  options: {
+    emailRedirectTo:
+      window.location.origin + window.location.pathname,
+    data: {
+      display_name: name,
+      referred_by_code: referralCode
+    }
+  }
+});
+
+
 
       if (error) throw error;
 
@@ -791,6 +844,108 @@ sb.auth.getSession().then(({ data, error }) => {
 
   sb.auth.getSession().then(({ data, error }) => {
     if (!error) showProfile(data.session);
+  });
+})();
+</script><script>
+(() => {
+  const sb = window.nexusSupabase;
+  const panel = document.getElementById('nca-panel');
+
+  if (!sb || !panel) return;
+
+  const box = document.createElement('div');
+  box.id = 'nca-referral-box';
+  box.hidden = true;
+  box.style.cssText =
+    'margin-top:16px;padding:14px;border:1px solid #ccc;' +
+    'border-radius:10px;background:#f8fafc;color:#17251c;';
+
+  const title = document.createElement('h3');
+  title.textContent = 'Gutumira inshuti';
+
+  const count = document.createElement('p');
+  count.textContent = 'Abatumiwe bemeje email: ...';
+
+  const link = document.createElement('input');
+  link.readOnly = true;
+  link.style.cssText =
+    'width:100%;box-sizing:border-box;padding:10px;margin:8px 0;';
+
+  const copy = document.createElement('button');
+  copy.type = 'button';
+  copy.textContent = 'Koporora link yo gutumira';
+
+  const status = document.createElement('p');
+  status.setAttribute('aria-live', 'polite');
+
+  box.append(title, count, link, copy, status);
+
+  const logout = document.getElementById('nca-logout');
+  panel.insertBefore(box, logout || null);
+
+  async function loadReferral(session) {
+    if (!session?.user) {
+      box.hidden = true;
+      return;
+    }
+
+    box.hidden = false;
+    count.textContent = 'Turimo gushaka amakuru...';
+    status.textContent = '';
+
+    const { data: profile, error: profileError } = await sb
+      .from('profiles')
+      .select('referral_code')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+    if (profileError || !profile?.referral_code) {
+      count.textContent = 'Referral code ntiyabonetse.';
+      status.textContent = profileError?.message || '';
+      return;
+    }
+
+    const url = new URL(
+      window.location.pathname,
+      window.location.origin
+    );
+    url.searchParams.set('ref', profile.referral_code);
+    link.value = url.toString();
+
+    const { data, error } =
+      await sb.rpc('get_my_referral_stats');
+
+    if (error) {
+      count.textContent = 'Umubare w’abatumiwe ntiwabonetse.';
+      status.textContent = error.message;
+      return;
+    }
+
+    const stats = Array.isArray(data) ? data[0] : data;
+
+    count.textContent =
+      'Abatumiwe bemeje email: ' +
+      (stats?.confirmed_referrals ?? 0);
+  }
+
+  copy.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(link.value);
+      status.textContent = 'Link yakoporowe neza.';
+    } catch (error) {
+      link.focus();
+      link.select();
+      status.textContent =
+        'Kanda Ctrl+C kugira ngo ukopore link.';
+    }
+  });
+
+  sb.auth.onAuthStateChange((_event, session) => {
+    loadReferral(session);
+  });
+
+  sb.auth.getSession().then(({ data, error }) => {
+    if (!error) loadReferral(data.session);
   });
 })();
 </script>
