@@ -722,6 +722,77 @@ sb.auth.getSession().then(({ data, error }) => {
   }
 });
 })();
+</script><script>
+(() => {
+  const sb = window.nexusSupabase;
+  const panel = document.getElementById('nca-panel');
+
+  if (!sb || !panel) return;
+
+  const card = document.createElement('div');
+  card.id = 'nca-profile-card';
+  card.hidden = true;
+
+  card.style.cssText =
+    'margin-top:16px;padding:14px;border:1px solid #d1d5db;' +
+    'border-radius:10px;background:#f8fafc;color:#17251c;';
+
+  const heading = document.createElement('h3');
+  heading.textContent = 'Profile yanjye';
+
+  const details = document.createElement('p');
+  details.style.overflowWrap = 'anywhere';
+
+  card.append(heading, details);
+
+  const logout = document.getElementById('nca-logout');
+
+  if (logout) {
+    panel.insertBefore(card, logout);
+  } else {
+    panel.appendChild(card);
+  }
+
+  async function showProfile(session) {
+    if (!session?.user) {
+      card.hidden = true;
+      return;
+    }
+
+    card.hidden = false;
+    details.textContent = 'Turimo gushaka amakuru ya profile...';
+
+    const { data, error } = await sb
+      .from('profiles')
+      .select('display_name, referral_code')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+    if (error) {
+      details.textContent =
+        'Ntibyashobotse kubona profile. ' + error.message;
+      return;
+    }
+
+    if (!data) {
+      details.textContent =
+        'Profile ntiyabonetse kuri iyi konti.';
+      return;
+    }
+
+    details.textContent =
+      'Amazina: ' + (data.display_name || 'Ntabwo yashyizwemo') +
+      ' | Referral code: ' + data.referral_code;
+  }
+
+  sb.auth.onAuthStateChange((_event, session) => {
+    showProfile(session);
+  });
+
+  sb.auth.getSession().then(({ data, error }) => {
+    if (!error) showProfile(data.session);
+  });
+})();
 </script>
 </body>
 </html>
