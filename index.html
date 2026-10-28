@@ -328,5 +328,400 @@
 
   console.log('Nexus Capital: Supabase client initialized');
 </script>
+<style>
+  #nca-open, #nca-panel button {
+    font: inherit;
+    cursor: pointer;
+  }
+
+  #nca-open {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 99990;
+    padding: 13px 18px;
+    border: 0;
+    border-radius: 30px;
+    background: #14532d;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 16px #0003;
+  }
+
+  #nca-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: #0009;
+    font-family: Arial, sans-serif;
+  }
+
+  #nca-overlay.nca-visible {
+    display: flex;
+  }
+
+  #nca-panel {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 24px;
+    border-radius: 16px;
+    background: white;
+    color: #17251c;
+    box-shadow: 0 10px 35px #0004;
+  }
+
+  #nca-panel h2 {
+    margin: 0 35px 8px 0;
+  }
+
+  #nca-close {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    padding: 5px 10px;
+    border: 0;
+    background: #eee;
+    border-radius: 8px;
+  }
+
+  #nca-panel .nca-tabs {
+    display: flex;
+    gap: 8px;
+    margin: 18px 0;
+  }
+
+  #nca-panel .nca-tabs button {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #f3f4f6;
+  }
+
+  #nca-panel .nca-tabs button.active {
+    background: #14532d;
+    color: white;
+  }
+
+  #nca-panel .nca-form {
+    display: grid;
+    gap: 12px;
+  }
+
+  #nca-panel .nca-form[hidden],
+  #nca-panel [hidden] {
+    display: none !important;
+  }
+
+  #nca-panel label {
+    display: grid;
+    gap: 5px;
+    font-size: 14px;
+  }
+
+  #nca-panel input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+
+  #nca-panel .nca-submit,
+  #nca-logout {
+    padding: 12px;
+    border: 0;
+    border-radius: 8px;
+    background: #14532d;
+    color: white;
+    font-weight: bold;
+  }
+
+  #nca-panel .nca-message {
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  #nca-panel .nca-message[data-kind="error"] {
+    color: #b91c1c;
+  }
+
+  #nca-panel .nca-message[data-kind="success"] {
+    color: #166534;
+  }
+
+  #nca-panel .nca-help {
+    color: #4b5563;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+</style>
+
+<button id="nca-open" type="button">Konti / Account</button>
+
+<div id="nca-overlay">
+  <section id="nca-panel"
+           role="dialog"
+           aria-modal="true"
+           aria-labelledby="nca-title">
+
+    <button id="nca-close" type="button" aria-label="Funga">✕</button>
+
+    <h2 id="nca-title">NEXUS CAPITAL</h2>
+    <p id="nca-session">Turimo kugenzura konti yawe...</p>
+    <p id="nca-message" class="nca-message" role="status"
+       aria-live="polite"></p>
+
+    <div id="nca-forms">
+      <div class="nca-tabs">
+        <button id="nca-tab-signup" type="button" class="active">
+          Iyandikishe
+        </button>
+        <button id="nca-tab-login" type="button">
+          Injira
+        </button>
+      </div>
+
+      <form id="nca-signup-form" class="nca-form">
+        <label>
+          Amazina
+          <input id="nca-name" type="text" autocomplete="name"
+                 maxlength="100" required>
+        </label>
+
+        <label>
+          Email
+          <input id="nca-signup-email" type="email"
+                 autocomplete="email" required>
+        </label>
+
+        <label>
+          Ijambo ry'ibanga (nibura inyuguti 8)
+          <input id="nca-signup-password" type="password"
+                 autocomplete="new-password" minlength="8" required>
+        </label>
+
+        <button class="nca-submit" type="submit">
+          Kora konti
+        </button>
+      </form>
+
+      <form id="nca-login-form" class="nca-form" hidden>
+        <label>
+          Email
+          <input id="nca-login-email" type="email"
+                 autocomplete="email" required>
+        </label>
+
+        <label>
+          Ijambo ry'ibanga
+          <input id="nca-login-password" type="password"
+                 autocomplete="current-password" required>
+        </label>
+
+        <button class="nca-submit" type="submit">
+          Injira muri konti
+        </button>
+      </form>
+
+      <p class="nca-help">
+        Konti nshya ishobora gusaba kwemeza email mbere yo kwinjira.
+      </p>
+    </div>
+
+    <button id="nca-logout" type="button" hidden>
+      Sohoka muri konti
+    </button>
+  </section>
+</div>
+
+<script>
+(() => {
+  const sb = window.nexusSupabase;
+
+  const byId = (id) => document.getElementById(id);
+  const overlay = byId('nca-overlay');
+  const forms = byId('nca-forms');
+  const signupForm = byId('nca-signup-form');
+  const loginForm = byId('nca-login-form');
+  const message = byId('nca-message');
+  const sessionText = byId('nca-session');
+  const logoutButton = byId('nca-logout');
+  const signupTab = byId('nca-tab-signup');
+  const loginTab = byId('nca-tab-login');
+
+  function showMessage(text, kind = '') {
+    message.textContent = text;
+    message.dataset.kind = kind;
+  }
+
+  function setMode(mode) {
+    const signup = mode === 'signup';
+    signupForm.hidden = !signup;
+    loginForm.hidden = signup;
+    signupTab.classList.toggle('active', signup);
+    loginTab.classList.toggle('active', !signup);
+    showMessage('');
+  }
+
+  function updateSession(session) {
+    const user = session && session.user;
+
+    if (user) {
+      sessionText.textContent = 'Winjiye nka: ' + user.email;
+      forms.hidden = true;
+      logoutButton.hidden = false;
+    } else {
+      sessionText.textContent = 'Nta muntu winjiye muri konti.';
+      forms.hidden = false;
+      logoutButton.hidden = true;
+    }
+  }
+
+  byId('nca-open').addEventListener('click', async () => {
+    overlay.classList.add('nca-visible');
+    showMessage('');
+
+    const { data, error } = await sb.auth.getSession();
+
+    if (error) {
+      showMessage('Ntibyashobotse kugenzura konti. Ongera ugerageze.',
+                  'error');
+      return;
+    }
+
+    updateSession(data.session);
+  });
+
+  byId('nca-close').addEventListener('click', () => {
+    overlay.classList.remove('nca-visible');
+  });
+
+  overlay.addEventListener('click', (event) => {
+    if (event.target === overlay) {
+      overlay.classList.remove('nca-visible');
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      overlay.classList.remove('nca-visible');
+    }
+  });
+
+  signupTab.addEventListener('click', () => setMode('signup'));
+  loginTab.addEventListener('click', () => setMode('login'));
+
+  signupForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const name = byId('nca-name').value.trim();
+    const email = byId('nca-signup-email').value.trim();
+    const password = byId('nca-signup-password').value;
+
+    const submitButton = signupForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    showMessage('Turimo gukora konti yawe...');
+
+    try {
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo:
+            window.location.origin + window.location.pathname,
+          data: {
+            display_name: name
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.session) {
+        updateSession(data.session);
+        showMessage('Konti yawe yakozwe neza kandi winjiye.',
+                    'success');
+        signupForm.reset();
+      } else {
+        showMessage(
+          'Konti yasabwe gukorwa. Reba email yawe, ukande link yo kwemeza konti. Nyuma ugaruke winjire.',
+          'success'
+        );
+      }
+    } catch (error) {
+      showMessage('Kwiyandikisha ntibyashobotse: ' + error.message,
+                  'error');
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  loginForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const email = byId('nca-login-email').value.trim();
+    const password = byId('nca-login-password').value;
+    const submitButton = loginForm.querySelector('button[type="submit"]');
+
+    submitButton.disabled = true;
+    showMessage('Turimo kugenzura amakuru yawe...');
+
+    try {
+      const { data, error } = await sb.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      updateSession(data.session);
+      showMessage('Winjiye muri konti yawe neza.', 'success');
+      loginForm.reset();
+    } catch (error) {
+      showMessage('Kwinjira ntibyashobotse: ' + error.message, 'error');
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  logoutButton.addEventListener('click', async () => {
+    logoutButton.disabled = true;
+
+    try {
+      const { error } = await sb.auth.signOut();
+      if (error) throw error;
+
+      updateSession(null);
+      showMessage('Wasohotse muri konti yawe.', 'success');
+      setMode('login');
+    } catch (error) {
+      showMessage('Gusohoka ntibyashobotse: ' + error.message, 'error');
+    } finally {
+      logoutButton.disabled = false;
+    }
+  });
+
+ sb.auth.onAuthStateChange((_event, session) => {
+  updateSession(session);
+});
+
+sb.auth.getSession().then(({ data, error }) => {
+  if (!error) {
+    updateSession(data.session);
+  }
+});
+})();
+</script>
 </body>
 </html>
