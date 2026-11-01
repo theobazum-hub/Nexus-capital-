@@ -755,7 +755,6 @@ const referralCode =
  sb.auth.onAuthStateChange((_event, session) => {
   updateSession(session);
 });
-
 sb.auth.getSession().then(({ data, error }) => {
   if (!error) {
     updateSession(data.session);
