@@ -539,28 +539,8 @@
     Kora konti
   </button>
 </form>
-    >
-  </label>
-          <input id="nca-name" type="text" autocomplete="name"
-                 maxlength="100" required>
-        </label>
-
-        <label>
-          Email
-          <input id="nca-signup-email" type="email"
-                 autocomplete="email" required>
-        </label>
-
-        <label>
-          Ijambo ry'ibanga (nibura inyuguti 8)
-          <input id="nca-signup-password" type="password"
-                 autocomplete="new-password" minlength="8" required>
-        </label>
-
-        <button class="nca-submit" type="submit">
-          Kora konti
-        </button>
-      </form>
+ 
+              
 
       <form id="nca-login-form" class="nca-form" hidden>
         <label>
@@ -595,7 +575,13 @@
 (() => {
   const sb = window.nexusSupabase;
 
-  const byId = (id) => document.getElementById(id);
+  const byId = (id) => document.getElementById(id);const invitedCode =
+  new URLSearchParams(window.location.search).get('ref');
+
+if (invitedCode && byId('nca-referral-code')) {
+  byId('nca-referral-code').value =
+    invitedCode.trim().toUpperCase();
+}
   const overlay = byId('nca-overlay');
   const forms = byId('nca-forms');
   const signupForm = byId('nca-signup-form');
