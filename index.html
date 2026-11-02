@@ -71,19 +71,18 @@
       </div>
     </section>
 
-    <section class="section" id="invest">
-      <div class="card">
-        <h2 data-i18n="investTitle">💰 Gahunda zo gushora</h2>
-        <p class="subtle" data-i18n="investIntro">Hitamo amafaranga yo kwifashisha mu mibare. Iyi demo ntakira amafaranga kandi ntitangiza ishoramari nyaryo.</p>
-        <label for="investAmount" data-i18n="amount">Amafaranga (Frw)</label>
-        <input class="input-box" id="investAmount" type="number" min="0" step="500" value="5000" inputmode="numeric">
-        <div class="rowline"><span data-i18n="selectedAmount">Amafaranga wahisemo</span><strong id="selectedAmount">5.000 Frw</strong></div>
-        <div class="rowline"><span data-i18n="dailyExample">Urugero rwa 0,5% ku munsi (ntirwizewe)</span><strong id="dailyExample">25 Frw</strong></div>
-        <button class="btn-primary" id="previewInvest" type="button" data-i18n="preview">Reba imibare y'urugero</button>
-        <div class="result" id="investResult" role="status"></div>
-        <p class="notice" data-i18n="riskNotice">Inyungu ntizizewe kandi zishobora no kuba igihombo. Ntugafate 0,5% ku munsi cyangwa 15% ku kwezi nk'isezerano ry'inyungu.</p>
-      </div>
-    </section>
+   <section class="section" id="invest">
+  <div class="card">
+    <h2>🏗️ NEXUS Business Projects</h2>
+    <p class="subtle">
+      Reba imishinga y'ubucuruzi yemejwe kandi yatangajwe
+      na NEXUS CAPITAL muri Afurika y'Iburasirazuba.
+    </p>
+    <div id="business-project-list" aria-live="polite">
+      <p class="notice">Turimo gushaka imishinga...</p>
+    </div>
+  </div>
+</section>
 
     <section class="section" id="wallet">
       <div class="card">
@@ -935,5 +934,58 @@ sb.auth.getSession().then(({ data, error }) => {
   });
 })();
 </script>
+
+<script>
+(async function loadBusinessProjects() {
+  const list = document.getElementById('business-project-list');
+
+  if (!list) return;
+
+  const sb = window.nexusSupabase;
+
+  if (!sb) {
+    list.textContent = 'Supabase ntiyafungutse. Ongera ugerageze nyuma.';
+    return;
+  }
+
+  list.textContent = 'Turimo gushaka imishinga...';
+
+  const { data, error } = await sb
+    .from('business_projects')
+    .select('id, project_name, description, business_category, country_code, currency')
+    .eq('status', 'published')
+    .order('created_at', { ascending: false });
+  if (error) {
+    console.error('Business projects error:', error);
+    list.textContent = 'Ntibyashobotse kubona imishinga. Ongera ugerageze nyuma.';
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    list.textContent = 'Nta mushinga uratangazwa ubu. Tuzakumenyesha igihe uzaba uhari.';
+    return;
+  }
+
+  list.innerHTML = data.map(project => `
+    <div class="card">
+      <h3>${escapeProjectText(project.project_name)}</h3>
+      <p>${escapeProjectText(project.description || '')}</p>
+      <p><strong>Ubwoko:</strong> ${escapeProjectText(project.business_category)}</p>
+      <p><strong>Igihugu:</strong> ${escapeProjectText(project.country_code)}</p>
+    </div>
+  `).join('');
+
+  function escapeProjectText(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[char]);
+  }
+})();
+</script>
+ 
 </body>
 </html>
