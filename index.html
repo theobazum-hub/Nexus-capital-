@@ -193,7 +193,7 @@
         if (translations[lang][key]) el.textContent = translations[lang][key];
       });
       document.getElementById("langToggle").textContent = lang === "rw" ? "EN" : "RW";
-      updateInvestPreview();
+    
     }
     document.getElementById("langToggle").addEventListener("click", () => {
       lang = lang === "rw" ? "en" : "rw";
@@ -213,22 +213,7 @@
       showSection(id);
     }));
 
-    function updateInvestPreview() {
-      const amount = Number(document.getElementById("investAmount").value);
-      document.getElementById("selectedAmount").textContent = money(Number.isFinite(amount) && amount >= 0 ? amount : 0);
-      document.getElementById("dailyExample").textContent = money(Number.isFinite(amount) && amount >= 0 ? amount * 0.005 : 0);
-    }
-    document.getElementById("investAmount").addEventListener("input", updateInvestPreview);
-    document.getElementById("previewInvest").addEventListener("click", () => {
-      const amount = Number(document.getElementById("investAmount").value);
-      const res = document.getElementById("investResult");
-      res.style.display = "block";
-      if (!Number.isFinite(amount) || amount < 0) {
-        res.textContent = t("calcInvalid");
-        return;
-      }
-      res.textContent = `${t("selectedAmount")}: ${money(amount)}\n${t("dailyExample")}: ${money(amount * 0.005)}\n\n${t("riskNotice")}`;
-    });
+   
 
     document.getElementById("walletInfo").addEventListener("click", () => {
       const res = document.getElementById("walletResult");
@@ -302,9 +287,8 @@
       res.textContent = lines.join("\n\n");
     }
 
-    setTextLanguage();
-    updateInvestPreview();
-    showSection("home");
+   setTextLanguage();
+showSection("home");
   })();
   </script>
 <!-- Supabase JavaScript library -->
