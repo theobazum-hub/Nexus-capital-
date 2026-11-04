@@ -718,12 +718,12 @@ sb.auth.getSession().then(({ data, error }) => {
 </script><script>
 (() => {
   const sb = window.nexusSupabase;
-  const panel = document.getElementById('nca-panel');
+const panel = document.getElementById('nca-profile-page');
 
-  if (!sb || !panel) return;
+if (!sb || !panel) return;
 
-  const panel = document.getElementById('nca-profile-page');
-  card.id = 'nca-profile-card';
+const card = document.createElement('div');
+card.id = 'nca-profile-card';
   card.hidden = true;
 
   card.style.cssText =
@@ -738,13 +738,15 @@ sb.auth.getSession().then(({ data, error }) => {
 
   card.append(heading, details);
 
-  panel.appendChild(card);
+panel.textContent = '';
+panel.appendChild(card);
 
   async function showProfile(session) {
-    if (!session?.user) {
-      card.hidden = true;
-      return;
-    }
+   if (!session?.user) {
+  card.hidden = false;
+  details.textContent = 'Banza winjire muri konti yawe kugira ngo ubone Profile.';
+  return;
+}
 
     card.hidden = false;
     details.textContent = 'Turimo gushaka amakuru ya profile...';
@@ -773,8 +775,8 @@ sb.auth.getSession().then(({ data, error }) => {
   }
 
   sb.auth.onAuthStateChange((_event, session) => {
-    showProfile(session);
-  });
+  setTimeout(() => showProfile(session), 0);
+});
 
   sb.auth.getSession().then(({ data, error }) => {
     if (!error) showProfile(data.session);
@@ -783,7 +785,7 @@ sb.auth.getSession().then(({ data, error }) => {
 </script><script>
 (() => {
   const sb = window.nexusSupabase;
-  const panel = document.getElementById('nca-panel');
+  const panel = document.getElementById('nca-referral-page');
 
   if (!sb || !panel) return;
 
@@ -813,15 +815,14 @@ sb.auth.getSession().then(({ data, error }) => {
   status.setAttribute('aria-live', 'polite');
 
   box.append(title, count, link, copy, status);
-
-  const logout = document.getElementById('nca-logout');
-  panel.insertBefore(box, logout || null);
-
+panel.textContent = '';
+  panel.appendChild(box);
   async function loadReferral(session) {
-    if (!session?.user) {
-      box.hidden = true;
-      return;
-    }
+   if (!session?.user) {
+  box.hidden = false;
+  count.textContent = 'Banza winjire muri konti yawe kugira ngo ubone Referral.';
+  return;
+}
 
     box.hidden = false;
     count.textContent = 'Turimo gushaka amakuru...';
@@ -874,9 +875,9 @@ sb.auth.getSession().then(({ data, error }) => {
     }
   });
 
-  sb.auth.onAuthStateChange((_event, session) => {
-    loadReferral(session);
-  });
+ sb.auth.onAuthStateChange((_event, session) => {
+  setTimeout(() => loadReferral(session), 0);
+});
 
   sb.auth.getSession().then(({ data, error }) => {
     if (!error) loadReferral(data.session);
