@@ -94,29 +94,23 @@
       </div>
     </section>
 
-    <section class="section" id="referral">
-      <div class="card">
-        <h2 data-i18n="refTitle">👥 Referral / Gutumira inshuti</h2>
-        <p class="subtle" data-i18n="refIntro">Nta link yihariye yo gutumira yashyizweho muri iyi demo.</p>
-        <label for="refCode" data-i18n="refCode">Kode yo gutumira (demo)</label>
-        <input class="input-box" id="refCode" value="NEXUS-DEMO" readonly>
-        <button class="btn-primary" type="button" id="copyRef" data-i18n="copyCode">Koporora kode</button>
-        <div class="result" id="refResult" role="status"></div>
-      </div>
-    </section>
+ <section class="section" id="referral">
+  <div class="card">
+    <h2>👥 Referral / Gutumira inshuti</h2>
+    <div id="nca-referral-page" aria-live="polite">
+      <p class="notice">Turimo gushaka amakuru ya Referral...</p>
+    </div>
+  </div>
+</section>
 
-    <section class="section" id="profile">
-      <div class="card">
-        <h2 data-i18n="profileTitle">👤 Umwirondoro</h2>
-        <label for="nameInput" data-i18n="yourName">Izina ryawe</label>
-        <input class="input-box" id="nameInput" value="Theoneste" maxlength="50" autocomplete="name">
-        <label for="phoneInput" data-i18n="phone">Telefoni (ntibikwa kuri server)</label>
-        <input class="input-box" id="phoneInput" value="" type="tel" inputmode="tel" placeholder="07...">
-        <button class="btn-primary" type="button" id="saveProfile" data-i18n="saveProfile">Hindura izina kuri iyi page</button>
-        <div class="result" id="profileResult" role="status"></div>
-        <p class="notice" data-i18n="profileNotice">Ibisobanuro by'iyi page bibikwa muri browser gusa. Nta konti nyayo ihujwe.</p>
-      </div>
-    </section>
+<section class="section" id="profile">
+  <div class="card">
+    <h2>👤 Umwirondoro wanjye</h2>
+    <div id="nca-profile-page" aria-live="polite">
+      <p class="notice">Turimo gushaka amakuru ya Profile...</p>
+    </div>
+  </div>
+</section>
 
     <section class="card" id="calculatorCard">
       <h2 data-i18n="calcTitle">📈 Calculator y'inyungu (urugero)</h2>
@@ -220,30 +214,7 @@
       res.style.display = "block";
       res.textContent = t("walletMessage");
     });
-    document.getElementById("copyRef").addEventListener("click", async () => {
-      const res = document.getElementById("refResult");
-      res.style.display = "block";
-      try {
-        await navigator.clipboard.writeText(document.getElementById("refCode").value);
-        res.textContent = t("copySuccess");
-      } catch (_) {
-        const field = document.getElementById("refCode");
-        field.focus(); field.select();
-        res.textContent = t("copyFail");
-      }
-    });
-    document.getElementById("saveProfile").addEventListener("click", () => {
-      const name = document.getElementById("nameInput").value.trim();
-      const res = document.getElementById("profileResult");
-      res.style.display = "block";
-      if (!name) {
-        res.textContent = lang === "rw" ? "Andika izina mbere yo gukomeza." : "Enter a name first.";
-        return;
-      }
-      document.getElementById("displayName").textContent = name;
-      res.textContent = t("profileSaved");
-    });
-
+   
     document.getElementById("runCalc").addEventListener("click", () => {
       const principal = Number(document.getElementById("calcPrincipal").value);
       const rate = Number(document.getElementById("calcRate").value);
@@ -751,7 +722,7 @@ sb.auth.getSession().then(({ data, error }) => {
 
   if (!sb || !panel) return;
 
-  const card = document.createElement('div');
+  const panel = document.getElementById('nca-profile-page');
   card.id = 'nca-profile-card';
   card.hidden = true;
 
@@ -767,13 +738,7 @@ sb.auth.getSession().then(({ data, error }) => {
 
   card.append(heading, details);
 
-  const logout = document.getElementById('nca-logout');
-
-  if (logout) {
-    panel.insertBefore(card, logout);
-  } else {
-    panel.appendChild(card);
-  }
+  panel.appendChild(card);
 
   async function showProfile(session) {
     if (!session?.user) {
